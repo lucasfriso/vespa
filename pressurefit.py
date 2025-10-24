@@ -33,7 +33,7 @@ def analyze_pressure_growth(filepath, chamber_volume):
     print("\n--- Analyzing Pressure Growth Phase ---")
 
 
-    data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True)
+    data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True,decimal=',')
     t = data['time']
     p = data['pressure']
     p_err = data['pressure_error']
@@ -77,7 +77,7 @@ def analyze_pressure_decrease(filepath, chamber_volume, s_nominal):
     print("\n--- Analyzing Pressure Decrease Phase ---")
 
 
-    data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True)
+    data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True,decimal=',')
     t = data['time']
     p = data['pressure']
     p_err = data['pressure_error']
