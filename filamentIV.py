@@ -3,8 +3,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+try:
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "serif",
+        "font.serif": ["Computer Modern", "Times New Roman"],
+        "mathtext.fontset": "cm",
+        "axes.formatter.use_mathtext": True,
+    })
+    print("Matplotlib style updated to use LaTeX for rendering.")
+    print("Ensure a LaTeX distribution (like TeX Live or MiKTeX) is installed.")
+except Exception as e:
+    print(f"--- Warning: Failed to set LaTeX rendering for plots. ---")
+    print(f"Error: {e}")
+    print("Falling back to default. Plots will not have TeX formatting.")
 
-# --- 1. THEORETICAL MODEL FUNCTIONS ---
 
 def theoretical_current(v, consts):
     """
@@ -55,7 +68,7 @@ def calculate_temperature(current, current_error, consts):
     return temperature, temperature_error
 
 
-# --- 2. PLOTTING FUNCTIONS ---
+
 
 def plot_iv_curve_with_residuals(data, consts):
     """
@@ -71,40 +84,41 @@ def plot_iv_curve_with_residuals(data, consts):
                                    gridspec_kw={'height_ratios': [3, 1]})
 
 
-    ax1.errorbar(V, I, yerr=I_err, xerr=V_err, fmt='o', color='navy', ecolor='lightblue',
-                 capsize=3, label='Experimental Data', markersize=4)
+    ax1.errorbar(V, I, yerr=I_err, xerr=V_err, fmt='o', color='blue', ecolor='cornflowerblue',
+                 capsize=3, label='Experimental Data', markersize=3)
 
     v_theory = np.linspace(min(V) * 0.9, max(V) * 1.1, 65)
     i_theory_line = theoretical_current(v_theory, consts)
 
     ax1.plot(v_theory, i_theory_line, color='red', linestyle='--', label='Theoretical Model')
 
-    ax1.set_title('Current vs. Voltage (I-V) Characteristic')
-    ax1.set_ylabel('Current (A)')
+    ax1.set_title('Current vs. Voltage (I-V) Characteristic',fontsize='17')
+    ax1.set_ylabel('Current (A)',fontsize='15')
     ax1.grid(True, which="both", ls="--")
-    ax1.legend()
+    ax1.legend(fontsize='17')
 
     i_theory_points = theoretical_current(V, consts)
     residuals = I - i_theory_points
 
-    #CHECK THISSS
+
     residuals_err = np.sqrt(I_err ** 2 + theoretical_current(V_err, consts)**2)
 
-    ax2.errorbar(V, residuals, yerr=residuals_err, fmt='o', color='black', ecolor='gray',
-                 capsize=3, markersize=4)
+    ax2.errorbar(V, residuals, yerr=residuals_err, fmt='o', color='blue', ecolor='cornflowerblue',
+                 capsize=3, markersize=3)
     ax2.axhline(0, color='red', linestyle='--', label='Zero Line')
 
-    ax2.set_xlabel('Voltage (V)')
-    ax2.set_ylabel('Residuals (A)\n(Exp - Theory)')
+    ax2.set_xlabel('Voltage (V)',fontsize='15')
+    ax2.set_ylabel('Residuals (A)\n(Exp - Theory)',fontsize='15')
     ax2.grid(True, which="both", ls="--")
 
 
 
-    plt.title('Current vs. Voltage (I-V) Characteristic')
-    plt.xlabel('Voltage (V)')
-    plt.ylabel('Current (A)')
+    plt.title('Current vs. Voltage (I-V) Characteristic',fontsize='17')
+    plt.xlabel('Voltage (V)',fontsize='15')
+    plt.ylabel('Current (A)',fontsize='15')
     plt.grid(True, which="both", ls="--")
-    plt.legend()
+    #plt.legend(fontsize='17',position='bottomleft')
+    plt.savefig('filamentIV.pdf', dpi=300)
     plt.show()
 
 
@@ -119,14 +133,16 @@ def plot_temperature_vs_current(data):
 
     plt.figure(figsize=(10, 7))
 
-    plt.errorbar(I, T, yerr=T_err, xerr=I_err, fmt='s', color='darkgreen', ecolor='lightgreen', capsize=3,
-                 label='Calculated Temperature', markersize=4)
+    plt.errorbar(I, T, yerr=T_err, fmt='o', color='blue', ecolor='cornflowerblue', capsize=3,
+                 label='Calculated Temperature', markersize=3)
+    plt.plot(I,T,linestyle='--', color='red', label='Theoretical Model')
 
-    plt.title('Filament Temperature vs. Current')
-    plt.xlabel('Current (A)')
-    plt.ylabel('Temperature (K)')
+    plt.title('Filament Temperature vs. Current',fontsize='17')
+    plt.xlabel('Current (A)',fontsize='15')
+    plt.ylabel('Temperature (K)',fontsize='15')
     plt.grid(True, which="both", ls="--")
-    plt.legend()
+    plt.legend(fontsize='17')
+    plt.savefig('TvI.pdf', dpi=300)
     plt.show()
 
 
@@ -138,7 +154,7 @@ if __name__ == "__main__":
     constants = {
         'C': 6.2e-11,
         'L': 0.1,
-        'r': 0.00025,
+        'r': 1.19e-04,
         'epsilon': 0.3,
         'sigma': 5.67e-8
     }
@@ -176,7 +192,7 @@ if __name__ == "__main__":
                 print(f"Error: '{key_to_change}' is not a valid constant name.")
 
     try:
-        iv_data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True)
+        iv_data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True,decimal=',')
 
 
         plot_iv_curve_with_residuals(iv_data, constants)

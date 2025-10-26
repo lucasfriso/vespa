@@ -87,35 +87,54 @@ def driven_oscillation_model(t, m, c, a, omega, phi):
 
 def analyze_pressure_growth(filepath, chamber_volume):
     """
-    Analyzes the pressure growth data, using pressure errors for a weighted fit.
+    Analyzes the pressure growth data, using a 1-PARAMETER fit
+    where the intercept is FIXED to the first data point.
     Generates a 2-panel plot with the fit and the residuals.
     """
-    print("\n--- Analyzing Pressure Growth Phase ---")
+    print("\n--- Analyzing Pressure Growth Phase (Fixed Intercept) ---")
 
     data = pd.read_csv(filepath, comment='#', header=0, delim_whitespace=True, decimal=',')
     t = data['time']
     p = data['pressure']
     p_err = data['pressure_error']
 
-    params, covariance = curve_fit(linear_model, t, p, sigma=p_err, absolute_sigma=True)
-    m_fit, c_fit = params
 
-    errors = np.sqrt(np.diag(covariance))
-    m_err, c_err = errors
+    p_initial = p.iloc[0]
+    t_initial = t.iloc[0]
+    p_initial_err = p_err.iloc[0]
+
+
+    if t_initial != 0:
+        print(f"Note: Initial time is t={t_initial} s (not 0).")
+
+
+    fixed_c_model = lambda t, m: m * (t - t_initial) + p_initial
+
+
+    params, covariance = curve_fit(fixed_c_model, t, p, sigma=p_err, absolute_sigma=True)
+
+
+    m_fit = params[0]
+    m_err = np.sqrt(np.diag(covariance))[0]
+
+
+    c_fit = p_initial
+    c_err = p_initial_err
 
     m_str = format_sci_pm(m_fit, m_err)
     c_str = format_sci_pm(c_fit, c_err)
     fit_label = (rf'Linear Fit' +
-                 f'\n$F_0/V = {m_str}$ mbar/s' +
-                 f'\n$p_0 = {c_str}$ mbar')
+                 f'\n$F_{{0,g}}/V = {m_str}$ mbar/s' +
+                 f'\n$p_{{i,g}} = {c_str}$ mbar')
+    # --- END MODIFICATION ---
 
     f0_growth = m_fit * chamber_volume
     f0_growth_err = m_err * chamber_volume
 
-    print(f"Linear Fit: p(t) = ({m_fit:.4e} ± {m_err:.2e}) * t + ({c_fit:.4e} ± {c_err:.2e})")
+    # Updated print statement to reflect the new model
+    print(f"Linear Fit: p(t) = ({m_fit:.4e} ± {m_err:.2e}) * (t - {t_initial:.1f}) + ({c_fit:.4e} ± {c_err:.2e})")
     print(f"Angular Coefficient (Slope): {m_fit:.4e} ± {m_err:.2e} (mbar/s)")
     print(f"Calculated Flux (F0) from growth phase: {f0_growth:.4e} ± {f0_growth_err:.2e} mbar·L/s")
-
 
     fig, axs = plt.subplots(2, 1, sharex=True, figsize=(10, 8),
                             gridspec_kw={'height_ratios': [3, 1]})
@@ -126,18 +145,18 @@ def analyze_pressure_growth(filepath, chamber_volume):
                 label=fit_label,
                 color='red', linestyle='--')
     axs[0].ticklabel_format(style='sci', axis='y', scilimits=(0, -4))
-    axs[0].set_title('Pressure Growth Phase Analysis')
-    axs[0].set_ylabel(r'Pressure (mbar)')
+    axs[0].set_title('Pressure Growth Phase Analysis',fontsize='17')
+    axs[0].set_ylabel(r'Pressure (mbar)',fontsize='15')
     axs[0].grid(True)
-    axs[0].legend()
+    axs[0].legend(fontsize='17')
 
 
     residuals = p - linear_model(t, m_fit, c_fit)
     axs[1].errorbar(t, residuals, yerr=p_err, fmt='o', color='blue',markersize=3, ecolor='cornflowerblue', capsize=3)
     axs[1].axhline(0, color='red', linestyle='--', linewidth=0.8)  # Add a zero line
     axs[1].ticklabel_format(style='sci', axis='y', scilimits=(0, -5))
-    axs[1].set_xlabel(r'Time (s)')
-    axs[1].set_ylabel(r'Residuals (mbar)')
+    axs[1].set_xlabel(r'Time (s)',fontsize='15')
+    axs[1].set_ylabel(r'Residuals (mbar)',fontsize='15')
     axs[1].grid(True)
 
     plt.tight_layout()
@@ -210,18 +229,18 @@ def analyze_pressure_decrease(filepath, chamber_volume, s_nominal):
                 label=fit_label,
                 color='red', linestyle='--')
     axs[0].ticklabel_format(style='sci', axis='y', scilimits=(0, -4))
-    axs[0].set_title('Pressure Decrease Phase Analysis')
-    axs[0].set_ylabel(r'Pressure (mbar)')
+    axs[0].set_title('Pressure Decrease Phase Analysis',fontsize='16')
+    axs[0].set_ylabel(r'Pressure (mbar)',fontsize='16')
     axs[0].grid(True, which="both", ls="-")
-    axs[0].legend()
+    axs[0].legend(fontsize='19')
 
 
 
     residuals = p - fit_func(t, tau_fit, p0_fit)
     axs[1].errorbar(t, residuals, yerr=p_err, fmt='o',markersize=3, color='blue', ecolor='cornflowerblue', capsize=3)
     axs[1].axhline(0, color='red', linestyle='--', linewidth=0.8)  # Add a zero line
-    axs[1].set_xlabel(r'Time (s)')
-    axs[1].set_ylabel(r'Residuals (mbar)')
+    axs[1].set_xlabel(r'Time (s)',fontsize='16')
+    axs[1].set_ylabel(r'Residuals (mbar)',fontsize='16')
     axs[1].grid(True, which="both", ls="-")
 
     plt.tight_layout()
