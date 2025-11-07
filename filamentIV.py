@@ -92,10 +92,10 @@ def plot_iv_curve_with_residuals(data, consts):
 
     ax1.plot(v_theory, i_theory_line, color='red', linestyle='--', label='Theoretical Model')
 
-    ax1.set_title('Current vs. Voltage (I-V) Characteristic',fontsize='17')
-    ax1.set_ylabel('Current (A)',fontsize='15')
+    ax1.set_title('Current vs. Voltage (I-V) Characteristic',fontsize='21')
+    ax1.set_ylabel('Current (A)',fontsize='21')
     ax1.grid(True, which="both", ls="--")
-    ax1.legend(fontsize='17')
+    ax1.legend(fontsize='19')
 
     i_theory_points = theoretical_current(V, consts)
     residuals = I - i_theory_points
@@ -107,16 +107,13 @@ def plot_iv_curve_with_residuals(data, consts):
                  capsize=3, markersize=3)
     ax2.axhline(0, color='red', linestyle='--', label='Zero Line')
 
-    ax2.set_xlabel('Voltage (V)',fontsize='15')
-    ax2.set_ylabel('Residuals (A)\n(Exp - Theory)',fontsize='15')
+    ax2.set_xlabel('Voltage (V)',fontsize='21')
+    ax2.set_ylabel('Residuals (A)',fontsize='21')
     ax2.grid(True, which="both", ls="--")
 
 
 
-    plt.title('Current vs. Voltage (I-V) Characteristic',fontsize='17')
-    plt.xlabel('Voltage (V)',fontsize='15')
-    plt.ylabel('Current (A)',fontsize='15')
-    plt.grid(True, which="both", ls="--")
+
     #plt.legend(fontsize='17',position='bottomleft')
     plt.savefig('filamentIV.pdf', dpi=300)
     plt.show()
@@ -137,11 +134,11 @@ def plot_temperature_vs_current(data):
                  label='Calculated Temperature', markersize=3)
     plt.plot(I,T,linestyle='--', color='red', label='Theoretical Model')
 
-    plt.title('Filament Temperature vs. Current',fontsize='17')
-    plt.xlabel('Current (A)',fontsize='15')
-    plt.ylabel('Temperature (K)',fontsize='15')
+    plt.title('Filament Temperature vs. Current',fontsize='21')
+    plt.xlabel('Current (A)',fontsize='21')
+    plt.ylabel('Temperature (K)',fontsize='21')
     plt.grid(True, which="both", ls="--")
-    plt.legend(fontsize='17')
+    plt.legend(fontsize='19')
     plt.savefig('TvI.pdf', dpi=300)
     plt.show()
 

@@ -145,8 +145,8 @@ def analyze_pressure_growth(filepath, chamber_volume):
                 label=fit_label,
                 color='red', linestyle='--')
     axs[0].ticklabel_format(style='sci', axis='y', scilimits=(0, -4))
-    axs[0].set_title('Pressure Growth Phase Analysis',fontsize='17')
-    axs[0].set_ylabel(r'Pressure (mbar)',fontsize='15')
+    axs[0].set_title('Pressure Growth Phase Analysis',fontsize='21')
+    axs[0].set_ylabel(r'Pressure (mbar)',fontsize='17')
     axs[0].grid(True)
     axs[0].legend(fontsize='17')
 
@@ -155,8 +155,8 @@ def analyze_pressure_growth(filepath, chamber_volume):
     axs[1].errorbar(t, residuals, yerr=p_err, fmt='o', color='blue',markersize=3, ecolor='cornflowerblue', capsize=3)
     axs[1].axhline(0, color='red', linestyle='--', linewidth=0.8)  # Add a zero line
     axs[1].ticklabel_format(style='sci', axis='y', scilimits=(0, -5))
-    axs[1].set_xlabel(r'Time (s)',fontsize='15')
-    axs[1].set_ylabel(r'Residuals (mbar)',fontsize='15')
+    axs[1].set_xlabel(r'Time (s)',fontsize='21')
+    axs[1].set_ylabel(r'Residuals (mbar)',fontsize='21')
     axs[1].grid(True)
 
     plt.tight_layout()
@@ -229,8 +229,8 @@ def analyze_pressure_decrease(filepath, chamber_volume, s_nominal):
                 label=fit_label,
                 color='red', linestyle='--')
     axs[0].ticklabel_format(style='sci', axis='y', scilimits=(0, -4))
-    axs[0].set_title('Pressure Decrease Phase Analysis',fontsize='16')
-    axs[0].set_ylabel(r'Pressure (mbar)',fontsize='16')
+    axs[0].set_title('Pressure Decrease Phase Analysis',fontsize='21')
+    axs[0].set_ylabel(r'Pressure (mbar)',fontsize='17')
     axs[0].grid(True, which="both", ls="-")
     axs[0].legend(fontsize='19')
 
@@ -239,8 +239,8 @@ def analyze_pressure_decrease(filepath, chamber_volume, s_nominal):
     residuals = p - fit_func(t, tau_fit, p0_fit)
     axs[1].errorbar(t, residuals, yerr=p_err, fmt='o',markersize=3, color='blue', ecolor='cornflowerblue', capsize=3)
     axs[1].axhline(0, color='red', linestyle='--', linewidth=0.8)  # Add a zero line
-    axs[1].set_xlabel(r'Time (s)',fontsize='16')
-    axs[1].set_ylabel(r'Residuals (mbar)',fontsize='16')
+    axs[1].set_xlabel(r'Time (s)',fontsize='21')
+    axs[1].set_ylabel(r'Residuals (mbar)',fontsize='21')
     axs[1].grid(True, which="both", ls="-")
 
     plt.tight_layout()
